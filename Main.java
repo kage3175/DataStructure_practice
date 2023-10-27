@@ -9,8 +9,12 @@ public class Main {
     input = sc.next();
     if(input.equals("heap")){
       heapAction(sc);
+    }else if(input.equals("closedhash")){
+      closedhashAction(sc);
     }
-    
+    else{
+      System.out.println("No such Data structure.");
+    }
 
   }
 
@@ -40,4 +44,40 @@ public class Main {
       }
     }
   }
+
+  public static int closedhashAction(Scanner sc){
+    int intinput = 0;
+    String input;
+    System.out.print("Decide your hash table size: ");
+    intinput = sc.nextInt();
+    ClosedHash hash = new ClosedHash(intinput);
+    while(true){
+      input = sc.next();
+      if(input.equals("q")){
+        return 0;
+      }else if(input.equals("p")){
+        hash.print();
+      }else if(input.equals("i")){
+        System.out.print("Key: ");
+        int key = sc.nextInt();
+        System.out.print("Address: ");
+        int address = sc.nextInt();
+        hash.insert(key, address);
+      }else if(input.equals("s")){
+        System.out.print("Key to search: ");
+        int key = sc.nextInt();
+        int address = hash.search(key);
+        if(address == 0){ //failed to search
+          System.out.println("No such key in the hash table");
+        }else{
+          System.out.println(address);
+        }
+      }
+      else{
+        System.out.println("No command such like that.");
+      }
+    }
+  }
+
+
 }
