@@ -6,6 +6,10 @@ class MaxHeap{
   int size = 0;
   int[] heap = new int[10000];
 
+  public MaxHeap(){
+    size = 0;
+  }
+
   public void heapify(int[] original){
     for(int i = size / 2 - 1; i >= 0;i--) siftDown(i);
   }
@@ -15,6 +19,14 @@ class MaxHeap{
     else{
       return (heap[idx1]>heap[idx2])?idx1:idx2;
     }
+  }
+
+  public void print(){
+    System.out.print("[");
+    for(int i = 0;i<size;i++){
+      System.out.print(heap[i] + ", ");
+    }
+    System.out.println("]");
   }
   
   public void siftDown(int idx){
@@ -57,9 +69,9 @@ class MaxHeap{
 
   public void insert(int a){
     heap[size++] = a;
-    int tmp = size--;
+    int tmp = size-1;
     while(tmp > 0){
-      int parent = tmp / 2 - 1;
+      int parent = (tmp-1) / 2;
       if(heap[parent] < heap[tmp]) {swap(parent, tmp);tmp = parent;}
       else return;
     }
@@ -67,9 +79,6 @@ class MaxHeap{
 
   public boolean isEmpty(){
     return (size > 0)? false:true;
-  }
-  public static void main(String args[]){
-
   }
 
 }
