@@ -1,80 +1,104 @@
-// Hash function is H(x) = x mod size
-// 
 
-public class ClosedHash{
-  private int entry = 0;
+public class ClosedHash {
   private int table_size = 0;
-  private LinkedList[] hash; 
+  private Entry[] hash;
+  private int entrynum = 0;
 
-  public class LinkedList{
+  private class Entry{
     int key;
-    LinkedList next;
     int address;
-
-    public LinkedList(){
-      key = 0;
-      next = null;
-      address = 0;
+    boolean deletionMask;
+    public Entry(int k, int a){
+      key = k;
+      address = a;
+      deletionMask = false;
     }
-  }
-
-  public int numEntry(){
-    return entry;
+    public void deleted(){
+      deletionMask = true;
+    }
+    public void clearMask(){
+      deletionMask = false;
+    }
+    public int getKey(){
+      return key;
+    }
+    public int getAddress(){
+      return address;
+    }
+    public boolean getMask(){
+      return deletionMask;
+    }
   }
 
   public ClosedHash(int size){
     table_size = size;
-    hash = new LinkedList[size];
+    hash = new Entry[size];
   }
 
-  public int hashFunction(int key){
-    return key % table_size;
+  public int incrementIdx(int idx){
+    if(idx == table_size - 1) return 0;
+    return ++idx;
+  }
+
+  public int hashFunction(int key){ // Linear Probing
+    int idx = key % table_size;
+    if(hash[idx] == null) return idx;
+    idx = incrementIdx(idx);
+    while(hash[idx]!=null && !hash[idx].getMask() && hash[idx].getKey() != key){
+      if(idx == table_size-1) {idx = 0;}
+      else idx++;
+    }
+    return idx;
   }
 
   public void insert(int key, int address){
-    int loc = hashFunction(key);
-    LinkedList node = new LinkedList();
-    node.key = key;
-    node.address = address;
-    if(hash[loc]==null){ //First access to this entry
-      hash[loc] = node;
-    }else{
-      LinkedList tmp = hash[loc];
-      while(tmp.next != null){
-        tmp = tmp.next;
-      }
-      tmp.next = node;
+    if(entrynum == table_size){ //Overflow
+      System.out.println("Too many entries.");
+      return;
     }
-    entry++;
+    entrynum++;
+    int idx = hashFunction(key);
+    Entry node = new Entry(key, address);
+    hash[idx] = node;
+  }
+
+  public int searchIdx(int key){
+    int idx = key % table_size;
+    int checkpoint = idx;
+    if(hash[idx].getKey() == key && !hash[idx].getMask()) return idx;
+    idx = incrementIdx(idx);
+    while(idx!=checkpoint){
+      if(hash[idx]==null) break;
+      if(hash[idx].getKey() == key && !hash[idx].getMask()) return idx;
+      idx = incrementIdx(idx);
+    }
+    System.out.println("No such key found.");
+    return -1;
   }
 
   public int search(int key){
-    int loc = hashFunction(key);
-    LinkedList tmp = hash[loc];
-    if(tmp == null){ //not found
-      return 0;
-    }
-    if(tmp.key == key) return tmp.address;
-    while(tmp.next != null){
-      tmp = tmp.next;
-      if(tmp.key == key) return tmp.address;
-    }
-    return 0; //if not found
+    int idx = searchIdx(key);
+    if(idx == -1) return 0;
+    return hash[idx].getAddress();
+  }
+
+  public int delete(int key){
+    int idx = searchIdx(key);
+    if(idx == -1) return 0;
+    entrynum--;
+    hash[idx].deleted();
+    return hash[idx].getAddress();
   }
 
   public void print(){
-    for(int i = 0; i < table_size; i++){
+    for(int i = 0;i < table_size;i++){
+      System.out.print(i + "\t");
       if(hash[i] == null){
-        System.out.println("-");
-      }
-      else{
-        LinkedList tmp = hash[i];
-        System.out.print(tmp.key + ": " + tmp.address);
-        while(tmp.next != null){
-          tmp = tmp.next;
-          System.out.print(" -> " + tmp.key + ": " + tmp.address);
-        }
-        System.out.println("");
+        System.out.println("null");
+      }else if(hash[i].getMask()){
+        System.out.println("deleted");
+      }else{
+        System.out.println(hash[i].getKey()+": "+hash[i].getAddress());
       }
     }
   }
