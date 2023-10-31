@@ -1,6 +1,14 @@
 public class Graph{
     private int numVertex = 0;
     private int numEdge = 0;
+    private Vertex[] listVertex;
+    private Edge[] listEdge;
+    private int[][] adjacentMatrix;
+    
+    public class LinkedList{
+        int key = 0;
+        
+    }
 
     public class Vertex{
         int key;
@@ -18,11 +26,15 @@ public class Graph{
         Vertex v2;
         int weight = 0;
 
-        public Edge(int v1_, int v2_, int weight_){
+        public Edge(Vertex v1_, Vertex v2_, int weight_){
             v1 = v1_;
             v2 = v2_;
             weight = weight_;
         }
+    }
+
+    public Graph(){
+
     }
 
 }
