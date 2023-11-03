@@ -6,7 +6,7 @@ public class Main {
     Scanner sc = new Scanner(System.in);
     String input;
     while(true){
-      System.out.println("Select your data structure.\n1. Max Heap\n2. Open Hash\n3. Closed Hash\nq. Quit\n");
+      System.out.println("Select your data structure.\n1. Max Heap\n2. Open Hash\n3. Closed Hash\n4. Graph\nq. Quit\n");
       System.out.print("Your Selection?: ");
       input = sc.next();
       if(input.equals("1")){
@@ -18,6 +18,9 @@ public class Main {
       }else if(input.equals("3")){
         openhashAction(sc);
         System.out.println("Finished Open Hash");
+      }else if(input.equals("4")){
+        graphAction(sc);
+        System.out.println("Finished Graph");
       }
       else if(input.equals("q")){
         sc.close();
@@ -28,6 +31,42 @@ public class Main {
     }
     }
 
+  }
+
+  public static int graphAction(Scanner sc){
+    Graph graph = new Graph();
+    String v1_; String v2_;
+    int weight;
+    String input;
+    while(true){
+      input = sc.next();
+      if(input.equals("v")){
+        System.out.print("Vertex name to add: ");
+        v1_ = sc.next();
+        graph.newVertex(v1_);
+      }else if(input.equals("e")){
+        System.out.print("Vertex1: ");
+        v1_ = sc.next();
+        System.out.print("Vertex2: ");
+        v2_ = sc.next();
+        System.out.print("Weight: ");
+        weight = sc.nextInt();
+        System.out.print("Is it directed?(y/n): ");
+        input = sc.next();
+        if(input.equals("y")){
+          graph.newEdge(v1_, v2_, weight, true);
+        }else{
+          graph.newEdge(v1_, v2_, weight, false);
+        }
+      }else if(input.equals("p")){
+        graph.printAdList();
+      }
+      else if(input.equals("q")){
+        return 0;
+      }else{
+        System.out.println("No command such like that.");
+      }
+    }
   }
 
   public static int heapAction(Scanner sc){
