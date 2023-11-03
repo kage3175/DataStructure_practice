@@ -60,6 +60,8 @@ public class Main {
         }
       }else if(input.equals("p")){
         graph.printAdList();
+      }else if(input.equals("cu")){
+        System.out.println("is undirected and cyclic?: " + graph.isCyclic_undirected());
       }
       else if(input.equals("q")){
         return 0;

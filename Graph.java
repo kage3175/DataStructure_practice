@@ -1,3 +1,6 @@
+import java.util.Stack;
+import java.util.Arrays;
+
 public class Graph{
     private int numVertex = 0;
     private int numEdge = 0;
@@ -31,6 +34,24 @@ public class Graph{
         public String getName(){
             return name;
         }
+        public int getKey(){
+            return key;
+        }
+    }
+
+    public class VertexPair{
+        Vertex current;
+        Vertex parent;
+        public VertexPair(Vertex v1, Vertex v2){
+            current = v1;
+            parent = v2;
+        }
+        public Vertex getParent(){
+            return parent;
+        }
+        public Vertex getCurrent(){
+            return current;
+        }
     }
 
     public class Edge{
@@ -44,6 +65,10 @@ public class Graph{
             v2 = v2_;
             weight = weight_;
             directed= directed_;
+        }
+
+        public boolean getDirected(){
+            return directed;
         }
     }
 
@@ -160,6 +185,45 @@ public class Graph{
             }
             System.out.println("");
         }
+    }
+
+    public boolean isUndirected(){
+        for(int i = 0; i < numEdge; i++){
+            if(listEdge[i].getDirected()) return false;
+        }
+        return true;
+    }
+
+    public boolean isCyclic_undirected(){
+        if(!isUndirected()){
+            System.out.println("The graph is not an undirected graph");
+            return false;
+        }
+        Stack<VertexPair> stack = new Stack<>();
+        boolean[] visited = new boolean[numVertex+1];
+        Arrays.fill(visited, false);
+        for(int i = 0; i< numVertex;i++){
+            if(visited[i]) continue;
+            stack.push(new VertexPair(listVertex[i], null));
+            while(!stack.isEmpty()){
+                VertexPair tmp = stack.pop();
+                int listidx = tmp.getCurrent().getKey();
+                visited[listidx] = true;
+                LinkedList ll = adjacentList[listidx].next;
+                //System.out.println(ll);
+                while(ll != null){
+                    if(visited[ll.key.getKey()] && (ll.key != tmp.getParent())){ //cycle detected
+                        //System.out.println(ll.key.getKey() +" " + tmp.getParent().getKey());
+                        return true;
+                    }else if(!visited[ll.key.getKey()]){
+                        stack.push(new VertexPair(ll.key, tmp.getCurrent()));
+                    }
+                    
+                    ll = ll.next;
+                }
+            }
+        }
+        return false;
     }
 
 }
