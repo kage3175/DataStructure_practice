@@ -16,6 +16,7 @@ def isSorted():
 
 
 ######### Sort functions #########
+## All returns cnt_swap and cnt_compare
 
 ## n^2
 
